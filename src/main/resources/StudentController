@@ -1,81 +1,48 @@
-package com.example.StudentAPI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/students")
-public class StudentController {
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/students")
+public class StudentController
+
+{
 
     @Autowired
-    private final StudentService studentService;
+    private StudentService studentService;
 
-    public StudentController(StudentService studentService) {
-        this.studentService = studentService;
-    }
-
-  
     @GetMapping
-    public String listStudents(Model model) {
-        model.addAttribute("students", studentService.getAllStudents());
-        return "listStudent"; 
+    public List<Student> getAllStudents() 
+
+    {
+        return studentService.getAllStudents();
     }
 
-    // Show form to register new student
-    @GetMapping("/register")
-    public String showRegisterForm(Model model) {
-        Student student = new Student();
-        model.addAttribute("student", student);
-        return "registerStudent";
+    @GetMapping("/{id}")
+    public Student getStudentById(@PathVariable Long id)
+
+   {
+        return studentService.getStudentById(id);
     }
 
-    // Save student
-    @PostMapping("/save")
-    public String saveStudent(@ModelAttribute("student") Student student) {
-        studentService.addStudent(student);
-        return "redirect:/students";
+    @PostMapping
+    public Student createStudent(@RequestBody Student student) 
+   {
+        return studentService.createStudent(student);
     }
 
- 
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Student student = studentService.getStudentById(id);
-        if (student != null) {
-            model.addAttribute("student", student);
-            return "registerStudent";
-        } else {
-            return "redirect:/students";
-        }
+    @PutMapping("/{id}")
+    public Student updateStudent(@PathVariable Long id, @RequestBody Student student)
+
+   {
+        return studentService.updateStudent(id, student);
     }
 
-   
-    @PostMapping("/update/{id}")
-    public String updateStudent(@PathVariable("id") Long id, @ModelAttribute("student") Student updatedStudent) {
-        Student existingStudent = studentService.getStudentById(id);
-        if (existingStudent != null) {
-            existingStudent.setFirst_name(updatedStudent.getFirst_name());
-            existingStudent.setFirst_name(updatedStudent.getFirst_name());
-            existingStudent.setGender(updatedStudent.getGender());
-            existingStudent.setDate_of_birth(updatedStudent.getDate_of_birth());
-            existingStudent.setEmail(updatedStudent.getEmail());
-            existingStudent.setPhone(updatedStudent.getPhone());
-            existingStudent.setAddress(updatedStudent.getAddress());
-            existingStudent.setCity(updatedStudent.getCity());
-            existingStudent.setState(updatedStudent.getState());
-            existingStudent.setPincode(updatedStudent.getPincode());
-            existingStudent.setEnrollment_date(updatedStudent.getEnrollment_date());
-            existingStudent.setCourse(updatedStudent.getCourse());
+    @DeleteMapping("/{id}")
+    public void deleteStudent(@PathVariable Long id)  
 
-            studentService.updateStudent(existingStudent);
-        }
-        return "redirect:/students";
-    }
-
-   
-    @GetMapping("/delete/{id}")
-    public String deleteStudent(@PathVariable("id") Long id) {
+  {
         studentService.deleteStudent(id);
-        return "redirect:/students";
     }
 }
