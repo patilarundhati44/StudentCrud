@@ -2,8 +2,9 @@ package com.example.StudentAPI;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface StudRepository  extends JpaRepository<Student, Long> 
+public interface StudentRepository extends JpaRepository<Student, Long>
 
 {
+
    
 }
